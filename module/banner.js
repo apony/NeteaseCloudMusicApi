@@ -1,20 +1,14 @@
 // 首页轮播图
 
 module.exports = (query, request) => {
+    const type = {
+        0: 'pc',
+        1: 'android',
+        2: 'iphone',
+        3: 'ipad'
+      }[query.type || 0] || 'pc';
     return request(
-        'GET', `http://music.163.com/discover`, {},
-        {ua: 'pc', proxy: query.proxy}
+        'POST', `https://music.163.com/api/v2/banner/get`, {clientType: type},
+        {crypto: 'linuxapi', proxy: query.proxy}
     )
-    .then(response => {
-        try{
-            const banners = eval(`(${/Gbanners\s*=\s*([^;]+);/.exec(response.body)[1]})`)
-            response.body = {code: 200, banners: banners}
-            return response
-        }
-        catch(err){
-            response.status = 500
-            response.body = {code: 500, msg: err.stack}
-            return Promise.reject(response)
-        }
-    })
 }

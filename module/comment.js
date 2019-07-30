@@ -9,17 +9,22 @@ module.exports = (query, request) => {
         2: 'A_PL_0_', //  歌单
         3: 'R_AL_3_', //  专辑
         4: 'A_DJ_1_', //  电台,
-        5: 'R_VI_62_' //  视频
+        5: 'R_VI_62_',//  视频
+        6: 'A_EV_2_'  //  动态
     }[query.type]
     const data = {
         threadId: query.type + query.id
+    }
+    
+    if(query.type == 'A_EV_2_'){
+        data.threadId = query.threadId
     }
     if(query.t == 'add')
         data.content = query.content
     else if(query.t == 'delete')
         data.commentId = query.commentId
     return request(
-        'POST', `http://music.163.com/weapi/resource/comments/${query.t}`, data,
+        'POST', `https://music.163.com/weapi/resource/comments/${query.t}`, data,
         {crypto: 'weapi', cookie: query.cookie, proxy: query.proxy}
     )
 }
